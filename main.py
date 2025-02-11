@@ -79,4 +79,4 @@ async def create_proposal(ctx, num_locations: int, *, locations: str):
     for i in range(num_locations):
         await message.add_reaction(f"{i+1}\u20e3")  # Adds number reactions for voting
 
-bot.run('MTMzMDM5Mjk3MjUyMDMyNTE1MA.G_aGib.L9IsJl-fKp5Q8y4Nac2BT01jxjwdb7_WBh37OY')
+bot.run('token')
