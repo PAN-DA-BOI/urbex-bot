@@ -2,6 +2,10 @@ import shlex
 import discord
 from discord.ext import commands
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -34,15 +38,12 @@ async def show_commands(ctx):
     commands_list = """
     **/announce 'location', 'location name', 'date time', 'description'**
     - Announces when and what we're doing for the adventure.
-    
 
     **/bot**
     - Shows all the commands the bot knows, and how to use them.
-    
 
     **/getkit [kit to get]**
     - Gets a kit list from the designated place.
-    
 
     **/proposal [# of locations (example of three locations)] [location1] [location2] [location3]**
     - Makes a poll to choose where we should go.
@@ -80,4 +81,8 @@ async def create_proposal(ctx, num_locations: int, *, locations: str):
     for i in range(num_locations):
         await message.add_reaction(f"{i+1}\u20e3")  # Adds number reactions for voting
 
-bot.run('token')
+# Get the Discord token from the environment variables
+DISCORD_TOKEN = os.getenv('DISCORD_TOKEN')
+
+# Run the bot with the token from the environment variables
+bot.run(DISCORD_TOKEN)
