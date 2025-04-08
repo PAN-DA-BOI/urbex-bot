@@ -1,10 +1,16 @@
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const express = require('express');
+const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const shlex = require('shlex');
 require('dotenv').config();
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent] });
+const app = express();
+const port = 3000;
+
+app.use(bodyParser.json());
 
 const KIT_DIRECTORY = 'kits';
 
@@ -86,6 +92,32 @@ client.on('messageCreate', async message => {
             await sentMessage.react(`${i + 1}\u20e3`);
         }
     }
+});
+
+app.post('/send-notification', (req, res) => {
+    const { packet } = req.body;
+
+    if (!packet) {
+        return res.status(400).send('Missing packet');
+    }
+
+    const channelId = '1339025302780645407'; // Replace with your channel ID
+    const channel = client.channels.cache.get(channelId);
+
+    if (channel) {
+        channel.send(`Packet received: ${packet}`).then(() => {
+            res.send('Notification sent');
+        }).catch(error => {
+            console.error('Error sending message:', error);
+            res.status(500).send('Failed to send notification');
+        });
+    } else {
+        res.status(404).send('Channel not found');
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
 });
 
 client.login(process.env.DISCORD_TOKEN);
